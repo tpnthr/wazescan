@@ -1,27 +1,19 @@
 import { useEffect, useState } from "react";
 
 interface DashboardHeaderProps {
-  refreshInterval?: number;
   lastUpdated: number;
 }
 
-export default function DashboardHeader({
-  refreshInterval = 15000,
-  lastUpdated,
-}: DashboardHeaderProps) {
-  const [secondsLeft, setSecondsLeft] = useState(
-    Math.ceil(refreshInterval / 1000),
-  );
+export default function DashboardHeader({ lastUpdated }: DashboardHeaderProps) {
+  const [secondsElapsed, setSecondsElapsed] = useState(0);
 
   useEffect(() => {
-    setSecondsLeft(Math.ceil(refreshInterval / 1000));
+    setSecondsElapsed(Math.floor((Date.now() - lastUpdated) / 1000));
     const interval = setInterval(() => {
-      setSecondsLeft((prev) =>
-        prev <= 1 ? Math.ceil(refreshInterval / 1000) : prev - 1,
-      );
+      setSecondsElapsed(Math.floor((Date.now() - lastUpdated) / 1000));
     }, 1000);
     return () => clearInterval(interval);
-  }, [refreshInterval, lastUpdated]);
+  }, [lastUpdated]);
 
   return (
     <header className="bg-card border-b border-border shadow-sm">
@@ -36,7 +28,7 @@ export default function DashboardHeader({
             <h1 className="text-xl font-semibold text-foreground">Dashboard</h1>
           </div>
           <span className="text-sm text-muted-foreground">
-            Refresh in {secondsLeft}s
+            Refreshed {secondsElapsed}s ago
           </span>
         </div>
       </div>

@@ -36,10 +36,7 @@ export default function Dashboard() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
-        <DashboardHeader
-          refreshInterval={refreshInterval}
-          lastUpdated={dataUpdatedAt}
-        />
+        <DashboardHeader lastUpdated={dataUpdatedAt} />
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-center py-12">
             <div className="bg-card rounded-lg p-6 shadow-sm border border-border">
@@ -57,10 +54,7 @@ export default function Dashboard() {
   if (error) {
     return (
       <div className="min-h-screen bg-background">
-        <DashboardHeader
-          refreshInterval={refreshInterval}
-          lastUpdated={dataUpdatedAt}
-        />
+        <DashboardHeader lastUpdated={dataUpdatedAt} />
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <Card className="border-destructive/20 bg-destructive/5 mb-6">
             <CardContent className="pt-6">
@@ -93,10 +87,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-background">
-      <DashboardHeader
-        refreshInterval={refreshInterval}
-        lastUpdated={dataUpdatedAt}
-      />
+      <DashboardHeader lastUpdated={dataUpdatedAt} />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {data?.stats && (
