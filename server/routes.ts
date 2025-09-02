@@ -35,12 +35,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const accidents = incidents.filter(i => i.type === 'ACCIDENT');
       const shoulder = incidents.filter(i => i.type === 'SHOULDER');
       
-      const stats: DashboardStats = {
-        totalAccidents: accidents.length,
-        carsOnShoulder: shoulder.length,
-        lastUpdated: new Date().toISOString(),
-        apiStatus: 'Online'
-      };
+        const stats: DashboardStats = {
+          totalAccidents: accidents.length,
+          carsOnShoulder: shoulder.length,
+        };
 
       const response: WazeApiResponse = {
         incidents,
@@ -96,8 +94,6 @@ async function fetchWazeIncidents(): Promise<WazeApiResponse> {
     const stats: DashboardStats = {
       totalAccidents: accidents.length,
       carsOnShoulder: shoulder.length,
-      lastUpdated: new Date().toISOString(),
-      apiStatus: 'Online'
     };
 
     return {
