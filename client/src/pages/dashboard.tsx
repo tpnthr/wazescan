@@ -1,48 +1,29 @@
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
 import { type WazeApiResponse } from "@shared/schema";
 import DashboardHeader from "@/components/dashboard-header";
 import DashboardStats from "@/components/dashboard-stats";
 import IncidentsList from "@/components/incidents-list";
-import SystemStatus from "@/components/system-status";
 import { Card, CardContent } from "@/components/ui/card";
 import { AlertTriangle, CheckCircle, Loader2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function Dashboard() {
-  const [countdown, setCountdown] = useState(15);
-  
-  const { 
-    data, 
-    isLoading, 
-    error, 
+  const refreshInterval = 15000; // 15 seconds
+  const {
+    data,
+    isLoading,
+    error,
     refetch,
-    isRefetching 
+    isRefetching,
+    dataUpdatedAt,
   } = useQuery<WazeApiResponse>({
     queryKey: ["/api/incidents"],
-    refetchInterval: 15000, // 15 seconds
+    refetchInterval: refreshInterval,
     refetchIntervalInBackground: true,
   });
 
-  // Countdown timer for next refresh
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCountdown(prev => prev > 1 ? prev - 1 : 15);
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
-
-  // Reset countdown when data is refetched
-  useEffect(() => {
-    if (data) {
-      setCountdown(15);
-    }
-  }, [data]);
-
   const handleManualRefresh = () => {
     refetch();
-    setCountdown(15);
   };
 
   const accidents = data?.incidents?.filter(i => i.type === 'ACCIDENT').sort((a, b) => 
@@ -55,9 +36,9 @@ export default function Dashboard() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
-        <DashboardHeader 
-          lastUpdated="Loading..."
-          isConnected={false}
+        <DashboardHeader
+          refreshInterval={refreshInterval}
+          lastUpdated={dataUpdatedAt}
         />
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-center py-12">
@@ -76,9 +57,9 @@ export default function Dashboard() {
   if (error) {
     return (
       <div className="min-h-screen bg-background">
-        <DashboardHeader 
-          lastUpdated="Error occurred"
-          isConnected={false}
+        <DashboardHeader
+          refreshInterval={refreshInterval}
+          lastUpdated={dataUpdatedAt}
         />
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <Card className="border-destructive/20 bg-destructive/5 mb-6">
@@ -112,42 +93,30 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-background">
-      <DashboardHeader 
-        lastUpdated={data?.stats.lastUpdated || 'Never'}
-        isConnected={data?.stats.apiStatus === 'Online'}
+      <DashboardHeader
+        refreshInterval={refreshInterval}
+        lastUpdated={dataUpdatedAt}
       />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {data?.stats && (
-          <DashboardStats 
+          <DashboardStats
             stats={data.stats}
-            countdown={countdown}
-            isRefreshing={isRefetching}
           />
         )}
 
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center space-x-4">
-            <h2 className="text-lg font-semibold text-foreground">Live Incidents</h2>
-            <Button 
-              onClick={handleManualRefresh}
-              variant="outline"
-              size="sm"
-              disabled={isRefetching}
-              data-testid="button-refresh"
-            >
-              <RefreshCw className={`w-4 h-4 mr-2 ${isRefetching ? 'animate-spin' : ''}`} />
-              Refresh Now
-            </Button>
-          </div>
-          
-          <div className="flex items-center space-x-2">
-            <span className="text-sm text-muted-foreground">Auto-refresh:</span>
-            <div className="flex items-center space-x-1">
-              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span className="text-sm font-medium text-foreground">{countdown}s</span>
-            </div>
-          </div>
+        <div className="flex items-center mb-6">
+          <h2 className="text-lg font-semibold text-foreground mr-4">Live Incidents</h2>
+          <Button
+            onClick={handleManualRefresh}
+            variant="outline"
+            size="sm"
+            disabled={isRefetching}
+            data-testid="button-refresh"
+          >
+            <RefreshCw className={`w-4 h-4 mr-2 ${isRefetching ? 'animate-spin' : ''}`} />
+            Refresh Now
+          </Button>
         </div>
 
         {!hasIncidents ? (
@@ -169,7 +138,6 @@ export default function Dashboard() {
           />
         )}
 
-        <SystemStatus apiStatus={data?.stats.apiStatus || 'Offline'} />
       </main>
     </div>
   );

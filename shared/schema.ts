@@ -44,8 +44,6 @@ export type InsertIncident = z.infer<typeof insertIncidentSchema>;
 export interface DashboardStats {
   totalAccidents: number;
   carsOnShoulder: number;
-  lastUpdated: string;
-  apiStatus: 'Online' | 'Offline' | 'Error';
 }
 
 export interface WazeApiResponse {
