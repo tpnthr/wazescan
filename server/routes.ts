@@ -61,14 +61,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
 async function fetchWazeIncidents(): Promise<WazeApiResponse> {
   const urls = [
-    "https://www.waze.com/live-map/api/georss?bottom=52.1397&left=20.8662&top=52.2297&right=21.0122&env=row&types=alerts",
-    "https://www.waze.com/live-map/api/georss?bottom=52.1397&left=21.0122&top=52.2297&right=21.1582&env=row&types=alerts",
-    "https://www.waze.com/live-map/api/georss?bottom=52.2297&left=20.8662&top=52.3197&right=21.0122&env=row&types=alerts",
-    "https://www.waze.com/live-map/api/georss?bottom=52.2297&left=21.0122&top=52.3197&right=21.1582&env=row&types=alerts"
+    "https://www.waze.com/live-map/api/georss?bottom=52.050000&left=20.750000&top=52.166667&right=20.916667&env=row&types=alerts",
+    "https://www.waze.com/live-map/api/georss?bottom=52.050000&left=20.916667&top=52.166667&right=21.083333&env=row&types=alerts",
+    "https://www.waze.com/live-map/api/georss?bottom=52.050000&left=21.083333&top=52.166667&right=21.250000&env=row&types=alerts",
+    "https://www.waze.com/live-map/api/georss?bottom=52.166667&left=20.750000&top=52.283333&right=20.916667&env=row&types=alerts",
+    "https://www.waze.com/live-map/api/georss?bottom=52.166667&left=20.916667&top=52.283333&right=21.083333&env=row&types=alerts",
+    "https://www.waze.com/live-map/api/georss?bottom=52.166667&left=21.083333&top=52.283333&right=21.250000&env=row&types=alerts",
+    "https://www.waze.com/live-map/api/georss?bottom=52.283333&left=20.750000&top=52.400000&right=20.916667&env=row&types=alerts",
+    "https://www.waze.com/live-map/api/georss?bottom=52.283333&left=20.916667&top=52.400000&right=21.083333&env=row&types=alerts",
+    "https://www.waze.com/live-map/api/georss?bottom=52.283333&left=21.083333&top=52.400000&right=21.250000&env=row&types=alerts"
   ];
   
   try {
-    // Make all 4 requests in parallel
+    // Make all 9 requests in parallel
     const promises = urls.map(url => fetchSingleWazeArea(url));
     const results = await Promise.allSettled(promises);
     

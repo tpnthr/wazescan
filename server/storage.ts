@@ -50,6 +50,13 @@ export class MemStorage implements IStorage {
   async upsertIncident(insertIncident: InsertIncident): Promise<Incident> {
     const incident: Incident = {
       ...insertIncident,
+      status: insertIncident.status ?? null,
+      description: insertIncident.description ?? null,
+      severity: insertIncident.severity ?? null,
+      reliability: insertIncident.reliability ?? null,
+      reporter: insertIncident.reporter ?? null,
+      rating: insertIncident.rating ?? null,
+      confidence: insertIncident.confidence ?? null,
       lastUpdated: new Date(),
     };
     this.incidents.set(incident.id, incident);
